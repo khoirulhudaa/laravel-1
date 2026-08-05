@@ -1,7 +1,34 @@
 <?php
 
+use App\Http\Controllers\ProdukElektroniksController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
+
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/produk-elektroniks', [ProdukElektroniksController::class, 'index'])->name('produk-elektroniks.index');
+    Route::post('/produk-elektroniks', [ProdukElektroniksController::class, 'store'])->name('produk-elektroniks.store');
+    Route::get('/create', [ProdukElektroniksController::class, 'create'])->name('produk-elektroniks.create');
+    Route::put('/produk-elektroniks/{id}', [ProdukElektroniksController::class, 'update'])->name('produk-elektroniks.update');
+    Route::delete('/produk-elektroniks/{id}', [ProdukElektroniksController::class, 'destroy'])->name('produk-elektroniks.destroy'); 
+});
+
+require __DIR__.'/auth.php';
