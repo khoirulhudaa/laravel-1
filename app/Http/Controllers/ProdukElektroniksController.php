@@ -19,8 +19,8 @@ class ProdukElektroniksController extends Controller
         $produkElektroniksData = $produkElektroniksService->getAllProdukElektroniks($request);
         return Inertia::render('Dashboard', [
             'produkElektroniks' => $produkElektroniksData,
-            'filters' => $request->only(['search', 'category', 'type', 'kodeseri']),
-        ]);
+        ])->with('success', $request->session()->get('success'))
+          ->with('error', $request->session()->get('error'));
     }
 
     /**
@@ -40,6 +40,20 @@ class ProdukElektroniksController extends Controller
         return redirect()->route('produk-elektroniks.index')->with('success', 'Produk elektronik berhasil ditambahkan.');
     }
 
+    public function edit()
+    {
+
+        $produk = ProdukElektroniks::findOrFail(request()->route('id'));   
+
+        if (!$produk) {
+            return redirect()->route('produk-elektroniks.index')->with('error', 'Produk elektronik tidak ditemukan.');
+        }
+
+        return Inertia::render('EditProdukElektroniks', [
+            'produk' => $produk
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -56,5 +70,13 @@ class ProdukElektroniksController extends Controller
     {
         ProdukElektroniks::findOrFail($id)->delete();
         return redirect()->route('produk-elektroniks.index')->with('success', 'Produk elektronik berhasil dihapus.');
+    }
+
+    public function restore(int $id)    
+    {
+        $produk = ProdukElektroniks::withTrashed()->findOrFail($id);
+        $produk->restore();
+
+        return redirect()->back();
     }
 }

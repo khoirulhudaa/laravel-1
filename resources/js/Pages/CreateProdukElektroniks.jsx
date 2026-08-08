@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, useForm } from '@inertiajs/react';
+import { Form, Link, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const CATEGORY_OPTIONS = ['Laptop', 'Smartphone', 'Tablet', 'Tv', 'Kamera', 'Audio', 'Sound', 'Hardware', 'Software'];
@@ -53,7 +53,7 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
             <div className="bg-gray-900 py-10">
                 <div className="mx-auto max-w-6xl px-6">
                     <div className="rounded-lg border border-gray-700 bg-gray-900 p-6">
-                        <form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-2">
                                 {/* Kolom kiri */}
                                 <div className="flex flex-col gap-4">
@@ -200,7 +200,7 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
                                     {processing ? 'Menyimpan...' : isEdit ? 'Update' : 'Simpan'}
                                 </button>
                             </div>
-                        </form>
+                        </Form>
                     </div>
                 </div>
             </div>

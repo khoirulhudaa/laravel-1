@@ -2,7 +2,6 @@
 
     namespace App\Http\Requests;
 
-    use Illuminate\Contracts\Validation\ValidationRule;
     use Illuminate\Foundation\Http\FormRequest;
 
     class ProdukElektroniksRequest extends FormRequest
@@ -24,7 +23,7 @@
         {
             return [
                 'nameProduk' => ['required', 'string', 'max:100', 'min:3'],
-                'category' => ['required', 'string', 'in:Laptop,Smartphone,Tablet,Tv,Kamera,Audio,Sound,Hardware,Software'],
+                'category' => ['required', 'string', 'in:Laptop,Smartphone,Tablet,Tv,Kamera,Audio,Sound,Hardware,Software','Komputer'],
                 'kodeseri' => ['required', 'string', 'regex:/^[A-Z]{3}-[0-9]{4}$/'],
                 'supplier' => ['required', 'string', 'max:100'],
                 'buyer' => ['required', 'string', 'max:100'],

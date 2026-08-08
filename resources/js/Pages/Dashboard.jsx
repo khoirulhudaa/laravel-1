@@ -1,7 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { DataTable } from '@/shared/dataTable';
 
-export default function Dashboard({ produkElektroniks, filters }) {
+export default function Dashboard({produkElektroniks}) {
+
     return (
         <AuthenticatedLayout
             header={
@@ -11,11 +12,10 @@ export default function Dashboard({ produkElektroniks, filters }) {
             }
         >
 
-            <DataTable 
-                title="Barang Elektronik" 
-                description="Daftar barang yang masih di gudang penyimpanan" 
-                data={produkElektroniks}
-                filters={filters}
+        <DataTable 
+            data={produkElektroniks}
+            title="Barang Elektronik" 
+            description="Daftar barang yang masih di gudang penyimpanan" 
         />
 
         </AuthenticatedLayout>

@@ -13,8 +13,10 @@ class ProdukElektroniksService
 
         if($request->filled('search')) {
             $search = $request->input('search');
-            $query->where('nameProduk', 'like', "%$search%")
-                  ->orWhere('deskripsi', 'like', "%$search%");
+            $query->where(function ($q) use ($search) {
+                $q->where('nameProduk', 'like', "%$search%")
+                  ->orWhere('description', 'like', "%$search%");
+            }); 
         }
 
         if($request->filled('category')) {

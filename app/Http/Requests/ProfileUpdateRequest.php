@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,5 +26,20 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
         ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Name tidak boleh kosong',
+            'name.string' => 'Name wajib karakter',
+            'name.max' => 'Maksimal 255 karakter',
+
+            'email.required' => 'Email waji diisi',
+            'email.string' => 'Email wajib karakter',
+            'email.lowercase' => 'Email tidak boleh kapital',
+            'email.email' => 'Wajib mengandung simbol @',
+            'email.max' => 'Maksimal 255 karakter'
+        ];        
     }
 }

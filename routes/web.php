@@ -15,9 +15,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [produkElektroniksController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -27,8 +27,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/produk-elektroniks', [ProdukElektroniksController::class, 'index'])->name('produk-elektroniks.index');
     Route::post('/produk-elektroniks', [ProdukElektroniksController::class, 'store'])->name('produk-elektroniks.store');
     Route::get('/create', [ProdukElektroniksController::class, 'create'])->name('produk-elektroniks.create');
+    Route::get('/produk-elektroniks/{id}/edit', [ProdukElektroniksController::class, 'edit'])->name('produk-elektroniks.edit');
     Route::put('/produk-elektroniks/{id}', [ProdukElektroniksController::class, 'update'])->name('produk-elektroniks.update');
     Route::delete('/produk-elektroniks/{id}', [ProdukElektroniksController::class, 'destroy'])->name('produk-elektroniks.destroy'); 
+    Route::post('/produk-elektroniks/${id}/restore', [ProdukElektroniksController::class, 'restore'])->name('produk-elektroniks.restore');
 });
 
 require __DIR__.'/auth.php';
