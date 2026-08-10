@@ -31,6 +31,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/produk-elektroniks/{id}', [ProdukElektroniksController::class, 'update'])->name('produk-elektroniks.update');
     Route::delete('/produk-elektroniks/{id}', [ProdukElektroniksController::class, 'destroy'])->name('produk-elektroniks.destroy'); 
     Route::post('/produk-elektroniks/${id}/restore', [ProdukElektroniksController::class, 'restore'])->name('produk-elektroniks.restore');
+
+
+    Route::get('/permintaan', [PermintaanController::class, 'index'])->name('permintaan.index');
+    Route::post('/permintaan/store', [PermintaanController::class, 'store'])->name('permintaan.store');
+    Route::post('/create', [PermintaanController::class, 'create'])->name('permintaan.create');
+    Route::put('/permintaan/edit/{id}', [PermintaanController::class, 'edit'])->name('permintaan.edit');
+    Route::delete('/permintaan/{id}', [PermintaanController::class, 'destroy'])->name('permintaan.destroy');
+    Route::post('/permintaan/{id}/restore', [PermintaanController::class, 'restore'])->name('permintaan.restore');
 });
 
 require __DIR__.'/auth.php';

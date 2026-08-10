@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-table';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { ClipboardIcon, EyeIcon, FileSpreadsheetIcon, FileTextIcon, PenIcon, PlusIcon, TrashIcon } from 'lucide-react';
+import { ClipboardIcon, EyeIcon, FileSpreadsheetIcon, FileTextIcon, PenIcon, PlusIcon, RefreshCcwIcon, TrashIcon } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import * as XLSX from 'xlsx';
@@ -24,7 +24,6 @@ const COLUMN_LABELS = {
     category: 'Kategori',
     type: 'Type',
     supplier: 'Supplier',
-    // buyer: 'Buyer',
     condition: 'Kondisi',
     kodeseri: 'Kode Seri',
     price: 'Harga',
@@ -42,6 +41,7 @@ const TruncatedCell = ({ value, maxWidth = 'max-w-[150px]' }) => (
 export const DataTable = ({ data, title, description }) => {
 
     const { flash } = usePage().props;
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     useEffect(() => {
         if (flash.success) {
@@ -121,7 +121,6 @@ export const DataTable = ({ data, title, description }) => {
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnFilters, setColumnFilters] = useState([]);
     const [copied, setCopied] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null); 
     const [detailItem, setDetailItem] = useState(null);       // buat modal detail
     const [deleteItem, setDeleteItem] = useState(null);        // buat modal konfirmasi hapus
     const [isDeleting, setIsDeleting] = useState(false);        // loading state pas proses hapus
@@ -298,6 +297,39 @@ export const DataTable = ({ data, title, description }) => {
         }
     };
 
+    const handleRefreshData = () => {
+        setIsRefreshing(true)
+
+        router.reload({
+            only: ['produkElektroniks'],
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                toast.success('Berhasil perbarui data', {
+                    position: 'top-right',
+                    duration: 3000,
+                    style: {
+                        backgroundColor: '#1f2937',
+                        color: '#ffffff',
+                    },
+                })
+            },
+            onError: () => {
+                toast.error('Gagal perbarui data', {
+                    position: 'top-right',
+                    duration: 3000,
+                    style: {
+                        backgroundColor: 'red',
+                        color: '#1f2937'
+                    }
+                })
+            },
+            onFinish: () => {
+                setIsRefreshing(false)
+            }
+        })
+    }
+
     const handleEdit = (id) => {
         router.visit(route('produk-elektroniks.edit', id));
     };
@@ -472,8 +504,18 @@ export const DataTable = ({ data, title, description }) => {
                             icon={ClipboardIcon}
                             onClick={handleCopy}
                             className="flex items-center gap-2 rounded-md active:scale-[0.98] bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-600"
-                        >
+                            >
                             {copied ? 'Tersalin!' : 'Salin'}
+                        </Button>
+                        <Button
+                            variant={'neutral'}
+                            icon={RefreshCcwIcon}
+                            onClick={handleRefreshData}
+                            disabled={isRefreshing}
+                            loading={isRefreshing}
+                            className={`flex items-center gap-2 rounded-md active:scale-[0.98] bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-600`}
+                        >
+                            Perbarui
                         </Button>
                     </div>
                 </div>
@@ -725,7 +767,6 @@ export const DataTable = ({ data, title, description }) => {
                     </div>
                 </Dialog>
             </Transition>
-
         </div>
     );
 };

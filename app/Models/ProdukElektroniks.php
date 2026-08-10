@@ -13,7 +13,6 @@ class ProdukElektroniks extends Model
     use SoftDeletes;
 
     protected $table = 'produk_elektroniks';
-    protected $guarded = ['id'];
 
     protected $fillable = [
         'nameProduk',

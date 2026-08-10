@@ -22,10 +22,10 @@ const button = cva(
     },
 )
 
-export default function Button({ variant, size, className, icon: Icon, children, ...props }) {
+export default function Button({ variant, size, className, icon: Icon, loading, children, ...props }) {
     return (
         <button className={button({ variant, size, className })} {...props}>
-            { Icon && <Icon className="h-4 w-4" /> }
+            { Icon && <Icon className={`h-4 w-4 ${loading ? 'animate animate-spin duration-300' : ''}`} /> }
             { children }
         </button>
     )
