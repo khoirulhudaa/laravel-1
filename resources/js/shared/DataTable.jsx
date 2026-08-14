@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-table';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { ClipboardIcon, EyeIcon, FileSpreadsheetIcon, FileTextIcon, PenIcon, PlusIcon, RefreshCcwIcon, TrashIcon } from 'lucide-react';
+import { ClipboardIcon, FileSpreadsheetIcon, FileTextIcon, PlusIcon, RefreshCcwIcon } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import * as XLSX from 'xlsx';
@@ -38,7 +38,7 @@ const TruncatedCell = ({ value, maxWidth = 'max-w-[150px]' }) => (
     </span>
 );
 
-export const DataTable = ({ data, title, description }) => {
+export const DataTable = ({ data, title, description, columns:columnDefs, actions, prefix }) => {
 
     const { flash } = usePage().props;
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -103,8 +103,8 @@ export const DataTable = ({ data, title, description }) => {
     ], []);
 
     const dataCurrents = useMemo(
-        () => (data && data.length > 0 ? data : dummyData),
-        [data, dummyData]
+        () => (data && data.length > 0 ? data : []),
+        [data]
     );
 
     const formatPrice = (price) => {
@@ -121,82 +121,52 @@ export const DataTable = ({ data, title, description }) => {
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnFilters, setColumnFilters] = useState([]);
     const [copied, setCopied] = useState(false);
-    const [detailItem, setDetailItem] = useState(null);       // buat modal detail
-    const [deleteItem, setDeleteItem] = useState(null);        // buat modal konfirmasi hapus
-    const [isDeleting, setIsDeleting] = useState(false);        // loading state pas proses hapus
+    const [detailItem, setDetailItem] = useState(null);       
+    const [deleteItem, setDeleteItem] = useState(null);        
+    const [isDeleting, setIsDeleting] = useState(false);        
 
-    const columns = useMemo(() => [
-        columnHelper.accessor('nameProduk', {
-            header: 'Nama Produk',
-            cell: (info) => (
-                <TruncatedCell value={info.getValue()} maxWidth="max-w-[180px]" />
-            ),
-        }),
-        columnHelper.accessor('category', {
-            header: 'Kategori',
-            cell: (info) => (
-                <span
-                    title={info.getValue()}
-                    className="inline-block max-w-[120px] truncate rounded-full bg-gray-800/60 px-3 py-1 text-xs font-medium text-gray-300"
-                >
-                    {info.getValue()}
-                </span>
-            ),
-        }),
-        columnHelper.accessor('type', {
-            header: 'Type',
-            cell: (info) => <TruncatedCell value={info.getValue()} maxWidth="max-w-[100px]" />,
-        }),
-        columnHelper.accessor('supplier', {
-            header: 'Supplier',
-            cell: (info) => <TruncatedCell value={info.getValue()} maxWidth="max-w-[150px]" />,
-        }),
-        columnHelper.accessor('condition', {
-            header: 'Kondisi',
-            cell: (info) => <TruncatedCell value={info.getValue()} maxWidth="max-w-[100px]" />,
-        }),
-        columnHelper.accessor('kodeseri', {
-            header: 'Kode Seri',
-            cell: (info) => (
-                <span title={info.getValue()} className="block max-w-[120px] truncate text-gray-400">
-                    {info.getValue()}
-                </span>
-            ),
-        }),
-        columnHelper.accessor('price', {
-            header: 'Harga',
-            cell: (info) => formatPrice(info.getValue()),
-        }),
-        columnHelper.display({
-            id: 'actions',
-            header: 'Aksi',
-            cell: (info) => {
-                const item = info.row.original;
-                return (
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => handleEdit(item.id)}
-                            className="rounded-md bg-orange-600 p-2 text-sm font-medium text-white hover:bg-yellow-700"
-                        >
-                            <PenIcon size={13} />
-                        </button>
-                        <button
-                            onClick={() => handleDetail(item)}
-                            className="rounded-md bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700"
-                        >
-                            <EyeIcon size={13} />
-                        </button>
-                        <button
-                            onClick={() => handleDeleteClick(item)}
-                            className="rounded-md bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700"
-                        >
-                            <TrashIcon size={13} />
-                        </button>
-                    </div>
-                );
-            }
-        })
-    ], []);
+    const columns = useMemo(() => {
+        const generateColumns = (columnDefs || []).map((col) => (
+            columnHelper.accessor(col.accessor, {
+                header: col.header,
+                cell: col.cell 
+                ? col.cell 
+                : (info) => {
+                    const value = info.getValue();
+                    if(col.accessor === 'price') {
+                        return formatPrice(value)
+                    }
+                    if(col.accessor === 'status') {
+                        const valueStatus = info.getValue();
+                        if(valueStatus === 'ACC') {
+                            return <div className='w-max flex items-center justify-center bg-green-600 text-white px-2 pt-[1px] rounded-md text-sm'>
+                                {valueStatus}
+                            </div>;
+                        } 
+                        if(valueStatus === 'pending') {
+                            return <div className='w-max flex items-center justify-center bg-yellow-600 text-white px-2 pt-[1px] rounded-md text-sm'>
+                                {valueStatus}
+                            </div>
+                        }
+                        return <div className='w-max flex items-center justify-center bg-red-600 text-white px-2 pt-[1px] rounded-md text-sm'>
+                            {valueStatus}
+                        </div>;
+                    }
+                    return <TruncatedCell value={value} />
+                } 
+            })
+        ));
+
+        generateColumns.push(
+            columnHelper.display({
+                id: 'actions',
+                header: 'Aksi',
+                cell: (info) => (typeof actions === 'function' ? actions(info.row.original) : null) 
+            })
+        )
+
+        return generateColumns;
+    }, [data, actions])
 
     const table = useReactTable({
         data: dataCurrents,
@@ -331,7 +301,7 @@ export const DataTable = ({ data, title, description }) => {
     }
 
     const handleEdit = (id) => {
-        router.visit(route('produk-elektroniks.edit', id));
+        router.visit(route(`${prefix}.edit`, id));
     };
 
     const handleDetail = (item) => {
@@ -339,7 +309,7 @@ export const DataTable = ({ data, title, description }) => {
     };
 
     const handleDeleteClick = (item) => {
-        setDeleteItem(item); // buka modal konfirmasi, belum hapus beneran
+        setDeleteItem(item); 
     };
 
     const confirmDelete = () => {
@@ -478,7 +448,7 @@ export const DataTable = ({ data, title, description }) => {
                         <Button
                             variant={'success'}
                             icon={PlusIcon}
-                            onClick={() => window.location.href = '/create'}
+                            onClick={() => window.location.href = `${prefix}/create`}
                             className="flex items-center gap-2 rounded-md active:scale-[0.98] bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-600"
                         >
                             Tambah Data

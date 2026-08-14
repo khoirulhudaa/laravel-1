@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\ProdukElektroniks;
 use Illuminate\Database\Seeder;
-use App\Models\ProdukElektroniks;
 
 class ProdukElektroniksSeeder extends Seeder
 {

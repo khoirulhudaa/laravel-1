@@ -26,8 +26,7 @@ class PermintaanRequest extends FormRequest
             'namaProduk' => ['required' , 'string', 'min:3', 'max:255'],
             'applicant' => ['required', 'string', 'min:2', 'max:255'],
             'kodeseri' => ['required', 'string', 'regex:/^[A-Z]{3}-[0-9]{4}$/'],
-            'catalog' => ['required', 'string', 'min:3', 'max:255'],
-            'category' => ['required', 'string', 'in:Laptop,Smartphone,Tablet,Tv,Kamera,Audio,Sound,Hardware,Software','Komputer'],
+            'category' => ['required', 'string', 'in:Laptop,Smartphone,Tablet,Tv,Kamera,Audio,Sound,Hardware,Software,Komputer'],
             'type' => ['required', 'string', 'in:Lg,Panasonic,Samsung,Motorola,Vivo,Oppo,Intel,Hp', 'min:3', 'max:255'],
             'description' => ['required', 'min:3', 'max:255'],
             'status' => ['required', 'min:3', 'max:255'],
@@ -55,9 +54,6 @@ class PermintaanRequest extends FormRequest
             'applicant.required' => 'Applicant harus diisi.',
             'applicant.string' => 'Applicant harus berupa teks.',
             'applicant.max' => 'Applicant tidak boleh lebih dari 100 karakter.',
-
-            'catalog.required' => 'Catalog harus diisi.',
-            'catalog.string' => 'Catalog harus berupa teks.',
 
             'type.required' => 'Tipe harus diisi.',
             'type.string' => 'Tipe harus berupa teks.',

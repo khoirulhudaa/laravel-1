@@ -2,57 +2,72 @@
 
 namespace App\Services;
 
-use App\Models\ProdukElektroniks;
-use Illuminate\Http\Request;
 use App\Models\Permintaan;
+use Illuminate\Http\Request;
 
-class ProdukElektroniksService
+class PermintaanService
 {
-    public function getAllDataPermintaan(PermintaanRequest $request) 
+    public function getAllDataPermintaan(Request $request) 
     {
         $query = Permintaan::query();
 
-        if($query->filled('search')) {
+        if($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('namaProduk', 'like', "%$search%");
-                $q->where('kodeseri', 'like', "%$search%");
+                $q->where('namaProduk', 'like', "%$search%")
+                  ->orWhere('kodeseri', 'like', "%$search%");
             });
         }
 
-        if($query->filled('category')) {
+        if($request->filled('category')) {
             $category = $request->input('category');
             $query->where('category', $category);
         }
 
-        if($query->filled('type')) {
+        if($request->filled('type')) {
             $type = $request->input('type');
             $query->where('type', $type);    
         }
 
+        $query->where('deleted_at', null);
+
         return $query->get();
     }
 
-    public function getPrdukById(int $id) 
+    public function getDataById(int $id) 
     {
-        return Permintaan::find($id, ['*']);
+        return Permintaan::findOrFail($id);
     }
 
-    public function createPermintaan($data) 
+    public function createPermintaan(array $data) 
     {
-        Permintaan::create($data);
+        return Permintaan::create($data);
     }
 
-    public function updatePermintaanByid(int $id)
+    public function updatePermintaanByid(array $data, int $id)
     {
-        $dataFind = $this->getDataById($id);
-        $dataFind->update($request);
-        return $dataFind;
+        $item = Permintaan::findOrFail($id);
+        $item->update($data);
+        return $item;
     }
 
     public function deletePermintaanById(int $id)
     {
-        return Permintaan::destroy($id);
+        return Permintaan::findOrFail($id)->delete();
+    }
+
+    public function approval(int $id)
+    {
+        return Permintaan::findOrFail($id)->update([
+            'status' => 'ACC'
+        ]);
+    }
+
+    public function reject(int $id)
+    {
+        return Permintaan::findOrFail($id)->update([
+            'status' => 'REJECT'
+        ]);
     }
     
 }
