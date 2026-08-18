@@ -73,35 +73,6 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
         }
     }, [flash.success]);
 
-    const dummyData = useMemo(() => [
-        {
-            id: 1,
-            nameProduk: 'Contoh Produk A',
-            category: 'Komputer',
-            supplier: 'PT Supplier Jaya',
-            buyer: 'PT Pembeli Makmur',
-            catalog: 'CAT-001',
-            type: 'Laptop',
-            condition: 'Baru',
-            description: 'Contoh deskripsi produk elektronik.',
-            price: '5000000',
-            kodeseri: 'SN-0001',
-        },
-        {
-            id: 2,
-            nameProduk: 'Mesin Bubut',
-            category: 'Mesin Industri',
-            supplier: 'PT Jaya Jaya',
-            buyer: 'PT Pembeli Jaya',
-            catalog: 'CAT-002',
-            type: 'Mesin',
-            condition: 'Bekas',
-            description: 'Contoh deskripsi produk mesin.',
-            price: '1000000',
-            kodeseri: 'MS-0001',
-        },
-    ], []);
-
     const dataCurrents = useMemo(
         () => (data && data.length > 0 ? data : []),
         [data]
@@ -299,18 +270,6 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
             }
         })
     }
-
-    const handleEdit = (id) => {
-        router.visit(route(`${prefix}.edit`, id));
-    };
-
-    const handleDetail = (item) => {
-        setDetailItem(item);
-    };
-
-    const handleDeleteClick = (item) => {
-        setDeleteItem(item); 
-    };
 
     const confirmDelete = () => {
         if(!deleteItem) return;

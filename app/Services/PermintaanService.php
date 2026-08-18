@@ -24,14 +24,7 @@ class PermintaanService
             $query->where('category', $category);
         }
 
-        if($request->filled('type')) {
-            $type = $request->input('type');
-            $query->where('type', $type);    
-        }
-
-        $query->where('deleted_at', null);
-
-        return $query->get();
+        return $query->with('type')->get();
     }
 
     public function getDataById(int $id) 

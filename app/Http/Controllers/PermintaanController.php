@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PermintaanRequest;
-use App\Models\Permintaan;
 use App\Services\PermintaanService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -43,7 +42,7 @@ class PermintaanController extends Controller
 
         return Inertia::render('CreatePermintaan', [
             'dataPermintaan' => $item
-        ])->with('succes', 'Berhasil dapatkan data permintaan')
+        ])->with('success', 'Berhasil dapatkan data permintaan')
           ->with('error', 'Gagal mendapatkan data permintaan');
     }
 

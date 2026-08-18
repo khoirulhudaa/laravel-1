@@ -20,9 +20,14 @@ class Permintaan extends Model
         'applicant',
         'price',
         'category',
-        'type',
+        'type_id',
         'condition',
         'description',
         'status',
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(TypeModel::class, 'type_id');
+    }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\ProdukElektroniksController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TypeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,7 +21,7 @@ Route::get('/dashboard', [produkElektroniksController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'checkAdmin'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -41,10 +42,18 @@ Route::middleware('auth')->group(function () {
     Route::put('/permintaan/edit/{id}', [PermintaanController::class, 'update'])->name('permintaan.update');
     Route::delete('/permintaan/destroy/{id}', [PermintaanController::class, 'destroy'])->name('permintaan.destroy');
     Route::post('/permintaan/{id}/restore', [PermintaanController::class, 'restore'])->name('permintaan.restore');
-
+    
     // ACC/REJECT
     Route::post('/permintaan/approval/{id}', [PermintaanController::class, 'approval'])->name('permintaan.approval');
     Route::post('/permintaan/reject/{id}', [PermintaanController::class, 'reject'])->name('permintaan.reject');
+    
+    Route::get('/type', [TypeController::class, 'index'])->name('type.index');
+    Route::post('/type/store', [TypeController::class, 'store'])->name('type.store');
+    Route::get('/type/create', [TypeController::class, 'create'])->name('type.create');
+    Route::get('/type/edit/{id}', [TypeController::class, 'edit'])->name('type.edit');
+    Route::put('/type/edit/{id}', [TypeController::class, 'update'])->name('type.update');
+    Route::delete('/type/destroy/{id}', [TypeController::class, 'destroy'])->name('type.destroy');
+    Route::post('/type/{id}/restore', [TypeController::class, 'restore'])->name('permintaan.restore');
 });
 
 require __DIR__.'/auth.php';

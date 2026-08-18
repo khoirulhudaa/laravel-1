@@ -19,6 +19,7 @@ class ProdukElektroniks extends Model
         'category',
         'supplier',
         'buyer',
+        'type_id',
         'catalog',
         'type',
         'condition',
@@ -26,4 +27,9 @@ class ProdukElektroniks extends Model
         'price',
         'kodeseri'
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(TypeModel::class, 'type_id');
+    }
 }
