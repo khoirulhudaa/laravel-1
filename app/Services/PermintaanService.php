@@ -9,22 +9,23 @@ class PermintaanService
 {
     public function getAllDataPermintaan(Request $request) 
     {
-        $query = Permintaan::query();
-
-        if($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('namaProduk', 'like', "%$search%")
-                  ->orWhere('kodeseri', 'like', "%$search%");
-            });
-        }
-
-        if($request->filled('category')) {
-            $category = $request->input('category');
-            $query->where('category', $category);
-        }
-
-        return $query->with('type')->get();
+        return Permintaan::search($request->input('search'))
+        ->category($request->input('category'))
+        ->with('type')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'namaProduk' => $item->namaProduk,
+                'applicant' => $item->applicant,
+                'category' => $item->category,
+                'type' => $item->type ? "{$item->type->name} ({$item->type->country})" : "-",               
+                'condition' => $item->condition,
+                'description' => $item->description,
+                'status_label' => $item->status_label,
+                'status' => $item->status,
+            ];
+        });
     }
 
     public function getDataById(int $id) 
@@ -44,6 +45,7 @@ class PermintaanService
         return $item;
     }
 
+
     public function deletePermintaanById(int $id)
     {
         return Permintaan::findOrFail($id)->delete();
@@ -52,14 +54,14 @@ class PermintaanService
     public function approval(int $id)
     {
         return Permintaan::findOrFail($id)->update([
-            'status' => 'ACC'
+            'status' => 'approved'
         ]);
     }
 
     public function reject(int $id)
     {
         return Permintaan::findOrFail($id)->update([
-            'status' => 'REJECT'
+            'status' => 'rejected'
         ]);
     }
     

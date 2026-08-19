@@ -109,18 +109,22 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
                     }
                     if(col.accessor === 'status') {
                         const valueStatus = info.getValue();
-                        if(valueStatus === 'ACC') {
+                        const labelStatus = info.row.original.status_label;
+
+                        console.log('row original:', info.row.original); // tambahin ini sementara
+
+                        if(valueStatus === 'approved') {
                             return <div className='w-max flex items-center justify-center bg-green-600 text-white px-2 pt-[1px] rounded-md text-sm'>
-                                {valueStatus}
+                                {labelStatus}
                             </div>;
                         } 
                         if(valueStatus === 'pending') {
                             return <div className='w-max flex items-center justify-center bg-yellow-600 text-white px-2 pt-[1px] rounded-md text-sm'>
-                                {valueStatus}
+                                {labelStatus}
                             </div>
                         }
                         return <div className='w-max flex items-center justify-center bg-red-600 text-white px-2 pt-[1px] rounded-md text-sm'>
-                            {valueStatus}
+                            {labelStatus}
                         </div>;
                     }
                     return <TruncatedCell value={value} />

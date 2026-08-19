@@ -15,7 +15,7 @@ class permintaanCheckRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->user()->role !== 'admin') {
+        if($request->user()->role->name !== 'Admin') {
             abort(403, "{$request->user()->role} Tidak ada akses!");
         }
         return $next($request);
