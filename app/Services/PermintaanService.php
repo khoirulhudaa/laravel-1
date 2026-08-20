@@ -2,11 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\Comment;
 use App\Models\Permintaan;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PermintaanService
 {
+
     public function getAllDataPermintaan(Request $request) 
     {
         return Permintaan::search($request->input('search'))
@@ -14,7 +18,7 @@ class PermintaanService
         ->with('type')
         ->get()
         ->map(function ($item) {
-            return [
+            return [        
                 'id' => $item->id,
                 'namaProduk' => $item->namaProduk,
                 'applicant' => $item->applicant,
@@ -26,6 +30,11 @@ class PermintaanService
                 'status' => $item->status,
             ];
         });
+    }
+
+    public function getAllDataCommmentPermintaan() 
+    {
+        return Comment::with('user')->get();
     }
 
     public function getDataById(int $id) 
@@ -45,7 +54,6 @@ class PermintaanService
         return $item;
     }
 
-
     public function deletePermintaanById(int $id)
     {
         return Permintaan::findOrFail($id)->delete();
@@ -62,6 +70,14 @@ class PermintaanService
     {
         return Permintaan::findOrFail($id)->update([
             'status' => 'rejected'
+        ]);
+    }
+
+    public function comment(Model $commentTable, array $data)
+    {
+        return $commentTable->comments()->create([
+            'isi' => $data['isi'],
+            'user_id' => Auth::id()
         ]);
     }
     

@@ -443,9 +443,9 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
                         <Button
                             variant={'neutral'}
                             icon={RefreshCcwIcon}
-                            onClick={handleRefreshData}
                             disabled={isRefreshing}
                             loading={isRefreshing}
+                            onClick={handleRefreshData}
                             className={`flex items-center gap-2 rounded-md active:scale-[0.98] bg-gray-700 px-3 py-2 text-sm font-medium text-white hover:bg-gray-600`}
                         >
                             Perbarui

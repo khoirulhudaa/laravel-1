@@ -31,20 +31,24 @@ class ProdukElektroniksService
 
         return $query->get();
     }
+
     public function getProdukElektronikById($id)
     {
         return ProdukElektroniks::find($id, ['*']);
     }
+
     public function createProdukElektronik(array $data)
     {
         return ProdukElektroniks::create($data);
     }
+
     public function updateProdukElektronik(Request $data, int $id)
     {
         $produk = $this->getProdukElektronikById($id);
         $produk->update($data);
         return $produk;
     }
+    
     public function deleteProdukElektronik(int $id)
     {
         ProdukElektroniks::destroy($id);

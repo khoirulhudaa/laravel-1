@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class permintaanCheckRole
+class CommentMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class permintaanCheckRole
     public function handle(Request $request, Closure $next): Response
     {
         if(!Auth::check() || Auth::user()->role_id !== 1) {
-            abort(403, "{$request->user()->role->name} Tidak ada akses!");
+            abort(403, 'Kamu tidak punya akses');
         }
         return $next($request);
     }

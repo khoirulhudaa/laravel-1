@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentRequest;
 use App\Http\Requests\PermintaanRequest;
 use App\Services\PermintaanService;
 use Illuminate\Http\Request;
@@ -12,8 +13,10 @@ class PermintaanController extends Controller
     public function index(Request $request, PermintaanService $permintaanService) 
     {
         $permintaanData = $permintaanService->getAllDataPermintaan($request);
+        $commentData = $permintaanService->getAllDataCommmentPermintaan();
         return Inertia::render('Permintaan', [
             'permintaanData' => $permintaanData,
+            'permintaanCommentData' => $commentData
         ])->with('success', $request->session()->get('success'))
           ->with('error', $request->session()->get('error'));
     }
@@ -63,5 +66,12 @@ class PermintaanController extends Controller
         $permintaanService->reject($id);
         return redirect()->route('permintaan.index')->with('success', 'Anda menolak permintaan');
 
+    }
+
+    public function comment(PermintaanService $permintaanService, CommentRequest $commentRequest, int $id)
+    {
+
+        $permintaan = $permintaanService->getDataById($id);
+        $permintaanService->comment($permintaan, $commentRequest->validated());
     }
 }

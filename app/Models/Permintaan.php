@@ -49,7 +49,7 @@ class Permintaan extends Model
     }
 
     #[Scope]
-    protected function search(Builder $query, ?string $keyword): void
+    protected function scopeSearch(Builder $query, ?string $keyword): void
     {
      if($keyword) {
         $query->where(function ($q) use ($keyword) {
@@ -60,7 +60,7 @@ class Permintaan extends Model
     }
 
     #[Scope]
-    protected function category(Builder $query, ?string $category): void
+    protected function scopeCategory(Builder $query, ?string $category): void
     {
         if($category) {
             $query->where('category', $category);
@@ -72,5 +72,10 @@ class Permintaan extends Model
         return Attribute::make(
             set: fn ($value) => strtoupper($value)
         );
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable')->latest();
     }
 }
