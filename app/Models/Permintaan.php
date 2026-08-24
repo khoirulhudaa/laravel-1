@@ -54,7 +54,10 @@ class Permintaan extends Model
      if($keyword) {
         $query->where(function ($q) use ($keyword) {
             $q->where('namaProduk', 'like', "%$keyword%")
-            ->orWhere('category', 'like', "%$keyword%");
+            ->orWhere('category', 'like', "%$keyword%")
+            ->orWhere('applicant', 'like', "%$keyword%")
+            ->orWhere('description', 'like', "%$keyword%")
+            ->orWhere('condition', 'like', "%$keyword%");
         });
      }   
     }
@@ -64,6 +67,14 @@ class Permintaan extends Model
     {
         if($category) {
             $query->where('category', $category);
+        }
+    }
+
+    #[Scope]
+    protected function scopeStatus(Builder $query, ?array $status)
+    {
+        if($status) {
+            $query->whereIn('status', $status);
         }
     }
 

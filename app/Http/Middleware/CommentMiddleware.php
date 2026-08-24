@@ -16,7 +16,7 @@ class CommentMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::check() || Auth::user()->role_id !== 1) {
+        if(!Auth::check() || Auth::user()->role->name !== 'Admin') {
             abort(403, 'Kamu tidak punya akses');
         }
         return $next($request);

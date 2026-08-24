@@ -1,4 +1,4 @@
-import { EyeIcon, PenIcon, TrashIcon, CheckIcon, XIcon } from 'lucide-react';
+import { ArrowRightIcon, CheckIcon, EyeIcon, PenIcon, TrashIcon, XIcon } from 'lucide-react';
 
 export const EditButton = ({ onClick, Icon, loading, disabled }) => (
     <button
@@ -76,6 +76,21 @@ export const RejectButton = ({ onClick, Icon, loading, disabled }) => (
                 <Icon className='animate animate-spin duration-300 w-3' />
             ):
                 <XIcon size={13} />
+        }
+    </button>
+);
+export const RollbackButton = ({ onClick, Icon, loading, disabled }) => (
+    <button
+        onClick={onClick}
+        disabled={disabled}
+        className="rounded-md bg-gray-600 p-2 text-sm font-medium t flex items-center justify-center w-[32px] h-[32px] text-white hover:bg-gray-700"
+        title="Tolak"
+    >
+        {
+            loading ? (
+                <Icon className='animate animate-spin duration-300 w-3' />
+            ):
+                <ArrowRightIcon size={13} />
         }
     </button>
 );

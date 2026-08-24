@@ -34,7 +34,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="bg-white text-black">
+    <header className="fixed top-0 left-0 w-screen z-[999] bg-white text-black">
       <nav aria-label="Global" className="mx-auto flex w-full items-center justify-start p-6 lg:px-12">
         <div className="flex items-center gap-0 lg:gap-8">
           <div className="flex">
@@ -58,14 +58,14 @@ export default function Header() {
             </button>
           </div>
           <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-            <a href="#" className="text-sm/6 font-semibold text-black">
-              Gudang Kapas
+            <a href="/dashboard" className="text-sm/6 font-semibold text-black">
+              Halaman Utama
             </a>
-            <a href="#" className="text-sm/6 font-semibold text-black">
-              Pintex Unit 1
+            <a href="/permintaan" className="text-sm/6 font-semibold text-black">
+              Permintaan
             </a>
-            <a href="#" className="text-sm/6 font-semibold text-black">
-              Pintex Unit 2
+            <a href="/penerimaan" className="text-sm/6 font-semibold text-black">
+              Penerimaan
             </a>
           </PopoverGroup>
         </div>

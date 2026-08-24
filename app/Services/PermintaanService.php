@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Comment;
+use App\Models\Penerimaan;
 use App\Models\Permintaan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -15,9 +16,11 @@ class PermintaanService
     {
         return Permintaan::search($request->input('search'))
         ->category($request->input('category'))
+        ->status(['pending', 'rejected'])
         ->with('type')
-        ->get()
-        ->map(function ($item) {
+        ->paginate($request->input('per_page', 10))
+        ->withQueryString()
+        ->through(function ($item) {
             return [        
                 'id' => $item->id,
                 'namaProduk' => $item->namaProduk,
@@ -61,8 +64,19 @@ class PermintaanService
 
     public function approval(int $id)
     {
-        return Permintaan::findOrFail($id)->update([
+        $dataById = Permintaan::findOrFail($id);
+        $dataById->update([
             'status' => 'approved'
+        ]);
+        return Penerimaan::create([
+            'nameProduk' => $dataById->namaProduk,
+            'category' => $dataById->category,
+            'type_id' => $dataById->type_id,
+            'price' => $dataById->price,
+            'description' => $dataById->description,
+            'applicant' => $dataById->applicant,
+            'condition' => $dataById->condition,
+            'status' => 'reception'
         ]);
     }
 

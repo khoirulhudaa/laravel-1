@@ -9,16 +9,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class permintaanCheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::check() || Auth::user()->role_id !== 1) {
-            abort(403, "{$request->user()->role->name} Tidak ada akses!");
+        // Cek dulu apakah user login
+        if (!Auth::check()) {
+            abort(403, 'Anda harus login terlebih dahulu!');
         }
+
+        $user = Auth::user();
+
+        // Cek role_id
+        if ($user->role->name !== 'Admin') {
+            $roleName = $user->role->name ?? 'Unknown';
+            abort(403, "{$roleName} Tidak ada akses!");
+        }
+
         return $next($request);
     }
 }

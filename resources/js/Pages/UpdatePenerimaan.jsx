@@ -1,12 +1,12 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Form, Link } from '@inertiajs/react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-const CATEGORY_OPTIONS = ['Laptop', 'Smartphone', 'Tablet', 'Tv', 'Kamera', 'Audio', 'Sound', 'Hardware', 'Software', 'Komputer'];
+const CATEGORY_OPTIONS = ['Laptop', 'Smartphone', 'Tablet', 'Tv', 'Kamera', 'Audio', 'Sound', 'Hardware', 'Software'];
 const TYPE_OPTIONS = ['Panasonic', 'Lg', 'Samsung', 'Vivo', 'Motorola', 'Oppo', 'Intel', 'Hp'];
 const CONDITION_OPTIONS = ['New', 'Second'];
 
-export default function CreateProdukElektroniksView({ produkElektronik = null }) {
-    const isEdit = Boolean(produkElektronik);
+export default function UpdatePenerimaan({ data = null }) {
+    const isEdit = Boolean(data);
 
     const inputClass =
         'mt-1 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-400 focus:border-gray-500 focus:outline-none';
@@ -17,19 +17,19 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    {isEdit ? 'Edit Produk' : 'Tambah Produk'}
+                    {isEdit ? 'Edit penerimaan' : 'Tambah penerimaan'}
                 </h2>
             }
         >
             <div className="bg-gray-900 py-10">
                 <div className="mx-auto max-w-6xl px-6">
                     <div className="rounded-lg border border-gray-700 bg-gray-900 p-6">
-                        <Form 
-                            action={isEdit ? route('produk-elektroniks.update', data.id) : route('produk-elektroniks.store')}
+                        <Form
+                            action={isEdit ? route('penerimaan.update', data.id) : route('penerimaan.store')}
                             method={isEdit ? 'put' : 'post'}
                             resetOnSuccess={!isEdit}
-                            >
-                            {({errors, processing}) => (
+                        >
+                            {({ errors, processing }) => (
                                 <>
                                     <div className="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-2">
                                         {/* Kolom kiri */}
@@ -38,23 +38,23 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
                                                 <label className={labelClass}>Nama Produk</label>
                                                 <input
                                                     type="text"
-                                                    name='nameProduk'
-                                                    defaultValue={produkElektronik?.nameProduk}                                                    
+                                                    name="namaProduk"
+                                                    defaultValue={data?.namaProduk ?? ''}
                                                     className={inputClass}
                                                 />
-                                                {errors.nameProduk && <p className={errorClass}>{errors.nameProduk}</p>}
+                                                {errors.namaProduk && <p className={errorClass}>{errors.namaProduk}</p>}
                                             </div>
 
                                             <div>
                                                 <label className={labelClass}>Kategori</label>
                                                 <select
-                                                    name='category'
-                                                    defaultValue={produkElektronik?.category}                                                    
+                                                    name="category"
+                                                    defaultValue={data?.category ?? ''}
                                                     className={inputClass}
                                                 >
-                                                    <option defaultValue="">Pilih kategori</option>
+                                                    <option value="">Pilih kategori</option>
                                                     {CATEGORY_OPTIONS.map((opt) => (
-                                                        <option key={opt} defaultValue={opt}>{opt}</option>
+                                                        <option key={opt} value={opt}>{opt}</option>
                                                     ))}
                                                 </select>
                                                 {errors.category && <p className={errorClass}>{errors.category}</p>}
@@ -63,13 +63,13 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
                                             <div>
                                                 <label className={labelClass}>Type</label>
                                                 <select
-                                                    name='type'
-                                                    defaultValue={produkElektronik?.type}                                                    
+                                                    name="type"
+                                                    defaultValue={data?.type ?? ''}
                                                     className={inputClass}
                                                 >
-                                                    <option defaultValue="">Pilih type</option>
+                                                    <option value="">Pilih type</option>
                                                     {TYPE_OPTIONS.map((opt) => (
-                                                        <option key={opt} defaultValue={opt}>{opt}</option>
+                                                        <option key={opt} value={opt}>{opt}</option>
                                                     ))}
                                                 </select>
                                                 {errors.type && <p className={errorClass}>{errors.type}</p>}
@@ -78,13 +78,13 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
                                             <div>
                                                 <label className={labelClass}>Kondisi</label>
                                                 <select
-                                                    name='condition'
-                                                    defaultValue={produkElektronik?.condition}                                                    
+                                                    name="condition"
+                                                    defaultValue={data?.condition ?? ''}
                                                     className={inputClass}
                                                 >
-                                                    <option defaultValue="">Pilih kondisi</option>
+                                                    <option value="">Pilih kondisi</option>
                                                     {CONDITION_OPTIONS.map((opt) => (
-                                                        <option key={opt} defaultValue={opt}>{opt}</option>
+                                                        <option key={opt} value={opt}>{opt}</option>
                                                     ))}
                                                 </select>
                                                 {errors.condition && <p className={errorClass}>{errors.condition}</p>}
@@ -94,9 +94,9 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
                                                 <label className={labelClass}>Kode Seri</label>
                                                 <input
                                                     type="text"
-                                                    name='kodeseri'
+                                                    name="kodeseri"
                                                     placeholder="AAA-1234"
-                                                    defaultValue={produkElektronik?.kodeseri}                                                    
+                                                    defaultValue={data?.kodeseri ?? ''}
                                                     className={inputClass}
                                                 />
                                                 {errors.kodeseri && <p className={errorClass}>{errors.kodeseri}</p>}
@@ -106,44 +106,22 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
                                         {/* Kolom kanan */}
                                         <div className="flex flex-col gap-4">
                                             <div>
-                                                <label className={labelClass}>Catalog</label>
+                                                <label className={labelClass}>Pemohon</label>
                                                 <input
                                                     type="text"
-                                                    name='catalog'
-                                                    defaultValue={produkElektronik?.catalog}                                                    
+                                                    name="applicant"
+                                                    defaultValue={data?.applicant ?? ''}
                                                     className={inputClass}
                                                 />
-                                                {errors.catalog && <p className={errorClass}>{errors.catalog}</p>}
-                                            </div>
-
-                                            <div>
-                                                <label className={labelClass}>Supplier</label>
-                                                <input
-                                                    type="text"
-                                                    name='supplier'
-                                                    defaultValue={produkElektronik?.supplier}                                                    
-                                                    className={inputClass}
-                                                />
-                                                {errors.supplier && <p className={errorClass}>{errors.supplier}</p>}
-                                            </div>
-
-                                            <div>
-                                                <label className={labelClass}>Buyer</label>
-                                                <input
-                                                    type="text"
-                                                    name='buyer'
-                                                    defaultValue={produkElektronik?.buyer}                                                    
-                                                    className={inputClass}
-                                                />
-                                                {errors.buyer && <p className={errorClass}>{errors.buyer}</p>}
+                                                {errors.applicant && <p className={errorClass}>{errors.applicant}</p>}
                                             </div>
 
                                             <div>
                                                 <label className={labelClass}>Harga</label>
                                                 <input
                                                     type="text"
-                                                    name='price'
-                                                    defaultValue={produkElektronik?.price}                                                    
+                                                    name="price"
+                                                    defaultValue={data?.price ?? ''}
                                                     className={inputClass}
                                                 />
                                                 {errors.price && <p className={errorClass}>{errors.price}</p>}
@@ -152,19 +130,26 @@ export default function CreateProdukElektroniksView({ produkElektronik = null })
                                             <div>
                                                 <label className={labelClass}>Deskripsi</label>
                                                 <textarea
+                                                    name="description"
                                                     rows={5}
-                                                    name='description'
-                                                    defaultValue={produkElektronik?.description}                                                    
+                                                    defaultValue={data?.description ?? ''}
                                                     className={inputClass}
                                                 />
                                                 {errors.description && <p className={errorClass}>{errors.description}</p>}
                                             </div>
+
+                                            {/* status gak ada input visible di form ini, tetap dikirim biar kolom DB terisi */}
+                                            <input
+                                                type="hidden"
+                                                name="status"
+                                                value={data?.status ?? 'pending'}
+                                            />
                                         </div>
                                     </div>
 
                                     <div className="mt-6 flex justify-end gap-2 border-t border-gray-800 pt-4">
                                         <Link
-                                            href={route('produk-elektroniks.index')}
+                                            href={route('penerimaan.index')}
                                             className="rounded-md border border-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800"
                                         >
                                             Batal

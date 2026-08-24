@@ -23,7 +23,7 @@
         {
             return [
                 'nameProduk' => ['required', 'string', 'max:100', 'min:3'],
-                'category' => ['required', 'string', 'in:Laptop,Smartphone,Tablet,Tv,Kamera,Audio,Sound,Hardware,Software','Komputer'],
+                'category' => ['required', 'string', 'in:Laptop,Smartphone,Tablet,Tv,Kamera,Audio,Sound,Hardware,Software,Komputer'],
                 'kodeseri' => ['required', 'string', 'regex:/^[A-Z]{3}-[0-9]{4}$/'],
                 'supplier' => ['required', 'string', 'max:100'],
                 'buyer' => ['required', 'string', 'max:100'],

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('isi');
             $table->foreignId('user_id');
+            $table->softDeletes();
             $table->morphs('commentable');
             $table->timestamps();
         });

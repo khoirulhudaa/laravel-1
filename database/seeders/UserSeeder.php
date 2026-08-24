@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -13,12 +13,13 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now()
-        ]);
+
+        $Role = Role::pluck('id')->toArray();
+
+        if(empty($Role)) {
+            $this->command->warn('Table role masih kosong, jalankan RoleSeeder dahulu!');
+            return;
+        }
 
         User::factory(10)->create();
     }

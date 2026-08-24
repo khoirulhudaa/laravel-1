@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProdukElektroniksRequest;
 use App\Models\ProdukElektroniks;
 use App\Services\ProdukElektroniksService;
+use App\Trait\RedirectsWithFlash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProdukElektroniksController extends Controller
 {
+
+    use RedirectsWithFlash;
+
     /**
      * Display a listing of the resource.
      */
@@ -34,19 +38,19 @@ class ProdukElektroniksController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProdukElektroniksRequest $request): RedirectResponse
+    public function store(ProdukElektroniksService $produkElektroniksService, ProdukElektroniksRequest $request): RedirectResponse
     {
-        ProdukElektroniks::create($request->validated());
-        return redirect()->route('produk-elektroniks.index')->with('success', 'Produk elektronik berhasil ditambahkan.');
+        $produkElektroniksService->createProdukElektronik($request->validated());
+        return $this->redirectSuccess('produk-elektroniks.index', 'Data berhasil ditambahkan');
     }
-
-    public function edit()
+        
+        public function edit()
     {
-
+        
         $produk = ProdukElektroniks::findOrFail(request()->route('id'));   
-
+        
         if (!$produk) {
-            return redirect()->route('produk-elektroniks.index')->with('error', 'Produk elektronik tidak ditemukan.');
+            return $this->redirectError('produk-elektroniks.index', 'Data tidak ditemukan!');
         }
 
         return Inertia::render('EditProdukElektroniks', [
@@ -57,26 +61,24 @@ class ProdukElektroniksController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProdukElektroniksRequest $request, string $id)
+    public function update(ProdukElektroniksService $produkElektroniksService, ProdukElektroniksRequest $request, int $id)
     {
-        ProdukElektroniks::findOrFail($id)->update($request->validated());
-        return redirect()->route('produk-elektroniks.index')->with('success', 'Produk elektronik berhasil diperbarui.');
+        $produkElektroniksService->updateProdukElektronik($request->validated(), $id);
+        return $this->redirectSuccess('produk-elektroniks.index', 'Data berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(ProdukElektroniksService $produkElektroniksService, int $id)
     {
-        ProdukElektroniks::findOrFail($id)->delete();
-        return redirect()->route('produk-elektroniks.index')->with('success', 'Produk elektronik berhasil dihapus.');
+        $produkElektroniksService->deleteProdukElektronik($id);
+        return $this->redirectSuccess('produk-elektroniks.index', 'Data berhasil dihapus');
     }
 
-    public function restore(int $id)    
+    public function restore(ProdukElektroniksService $produkElektroniksService, int $id)    
     {
-        $produk = ProdukElektroniks::withTrashed()->findOrFail($id);
-        $produk->restore();
-
-        return redirect()->back();
+        $produkElektroniksService->restoreDataProduk($id);
+        return $this->redirectSuccess('produk-elektroniks.index', 'Data berhasil dikembalikan');
     }
 }

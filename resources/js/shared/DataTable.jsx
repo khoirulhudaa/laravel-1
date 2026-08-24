@@ -1,16 +1,14 @@
 import Button from '@/Components/Button';
 import { Dialog, Transition } from '@headlessui/react';
 import { router, usePage } from '@inertiajs/react';
+import jsPDF from 'jspdf';
 import {
     createColumnHelper,
     flexRender,
     getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ClipboardIcon, FileSpreadsheetIcon, FileTextIcon, PlusIcon, RefreshCcwIcon } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
@@ -39,6 +37,13 @@ const TruncatedCell = ({ value, maxWidth = 'max-w-[150px]' }) => (
 );
 
 export const DataTable = ({ data, title, description, columns:columnDefs, actions, prefix }) => {
+
+    const [sorting, setSorting] = useState([]);
+    const [globalFilter, setGlobalFilter] = useState('');
+    const [copied, setCopied] = useState(false);
+    const [detailItem, setDetailItem] = useState(null);       
+    const [deleteItem, setDeleteItem] = useState(null);        
+    const [isDeleting, setIsDeleting] = useState(false);    
 
     const { flash } = usePage().props;
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -73,10 +78,24 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
         }
     }, [flash.success]);
 
+    useEffect(() => {
+        const timeOut = setTimeout(() => {
+            router.get(route(`${prefix}.index`),
+                { search: globalFilter || undefined },
+                { preserveState: true, preserveScroll: true, replace: true } 
+            );
+        }, 100);
+
+        return () => clearTimeout(timeOut); 
+    }, [globalFilter]);
+
+    console.log('data', data)
+
     const dataCurrents = useMemo(
-        () => (data && data.length > 0 ? data : []),
+        () => (data?.data && data?.data?.length > 0 ? data.data : []),
         [data]
     );
+
 
     const formatPrice = (price) => {
         const num = Number(price);
@@ -86,15 +105,7 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
             currency: 'IDR',
             minimumFractionDigits: 0,
         }).format(num);
-    };
-
-    const [sorting, setSorting] = useState([]);
-    const [globalFilter, setGlobalFilter] = useState('');
-    const [columnFilters, setColumnFilters] = useState([]);
-    const [copied, setCopied] = useState(false);
-    const [detailItem, setDetailItem] = useState(null);       
-    const [deleteItem, setDeleteItem] = useState(null);        
-    const [isDeleting, setIsDeleting] = useState(false);        
+    };    
 
     const columns = useMemo(() => {
         const generateColumns = (columnDefs || []).map((col) => (
@@ -123,6 +134,11 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
                                 {labelStatus}
                             </div>
                         }
+                        if(valueStatus === 'reception') {
+                            return <div className='w-max flex items-center justify-center bg-blue-600 text-white px-2 pt-[1px] rounded-md text-sm'>
+                                {labelStatus}
+                            </div>
+                        }
                         return <div className='w-max flex items-center justify-center bg-red-600 text-white px-2 pt-[1px] rounded-md text-sm'>
                             {labelStatus}
                         </div>;
@@ -146,21 +162,17 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
     const table = useReactTable({
         data: dataCurrents,
         columns,
-        state: { sorting, globalFilter, columnFilters },
+        state: { sorting, globalFilter },
         onSortingChange: setSorting,
         onGlobalFilterChange: setGlobalFilter,
-        onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
         initialState: {
             pagination: { pageSize: 10 },
         },
     });
 
-    const getFilteredData = () =>
-        table.getFilteredRowModel().rows.map((row) => row.original);
+    const getFilteredData = () => dataCurrents;
 
     const handleExportExcel = () => {
         const rows = getFilteredData();
@@ -473,15 +485,6 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
                                                     desc: ' ↓',
                                                 }[header.column.getIsSorted()] ?? ''}
                                             </div>
-
-                                            <input
-                                                type="text"
-                                                value={header.column.getFilterValue() ?? ''}
-                                                onChange={(e) => header.column.setFilterValue(e.target.value)}
-                                                onClick={(e) => e.stopPropagation()}
-                                                placeholder="Cari..."
-                                                className="mt-2 w-full rounded border border-gray-600 bg-gray-900 px-2 py-1 text-xs font-normal text-gray-200 placeholder-gray-500 focus:border-gray-400 focus:outline-none"
-                                            />
                                         </th>
                                     ))}
                                 </tr>
@@ -513,8 +516,11 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
                         <div className="flex items-center gap-2">
                             <select
                                 id="pageSize"
-                                value={table.getState().pagination.pageSize}
-                                onChange={(e) => table.setPageSize(Number(e.target.value))}
+                                value={data.per_page ?? 10}
+                                onChange={(e) => router.get(route(`${prefix}.index`), 
+                                { per_page: e.target.value, search: globalFilte || undefined },
+                                { preserveState: true, preserveScroll: true }
+                            )}
                                 className="rounded-md border border-gray-700 bg-gray-800 px-2 py-1 text-sm text-white focus:border-gray-500 focus:outline-none"
                             >
                                 {[10, 25, 50, 100].map((size) => (
@@ -526,47 +532,28 @@ export const DataTable = ({ data, title, description, columns:columnDefs, action
                         </div>
 
                         <span>
-                            Menampilkan {table.getRowModel().rows.length} dari {table.getFilteredRowModel().rows.length} data
+                            Menampilkan {data?.data?.length ?? 0} dari {data?.total ?? 0} data
                         </span>
 
                     </div>
 
                     <div className="flex flex-wrap items-center gap-1">
-                        <button
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                            className="rounded-md border border-gray-700 px-3 py-1 disabled:opacity-40"
-                        >
-                            «
-                        </button>
-
-                        {pageNumbers.map((pageIndex, i) =>
-                            pageIndex === 'ellipsis' ? (
-                                <span key={`ellipsis-${i}`} className="px-2 text-gray-500 select-none">
-                                    ...
-                                </span>
-                            ) : (
-                                <button
-                                    key={pageIndex}
-                                    onClick={() => table.setPageIndex(pageIndex)}
-                                    className={`rounded-md border px-3 py-1 ${
-                                        currentPage === pageIndex
-                                            ? 'border-white bg-white text-gray-900 font-semibold'
-                                            : 'border-gray-700 text-gray-300 hover:bg-gray-800'
-                                    }`}
-                                >
-                                    {pageIndex + 1}
-                                </button>
-                            )
-                        )}
-
-                        <button
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage()}
-                            className="rounded-md border border-gray-700 px-3 py-1 disabled:opacity-40"
-                        >
-                            »
-                        </button>
+                        {data?.links?.map((link, i) => (
+                            <button
+                                key={i}
+                                disabled={!link.url}
+                                onClick={() => link.url && router.get(link.url, {}, { 
+                                    preserveState: true, 
+                                    preserveScroll: true 
+                                })}
+                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                className={`rounded-md border px-3 py-1 text-sm disabled:opacity-40 ${
+                                    link.active
+                                        ? 'border-white bg-white text-gray-900 font-semibold'
+                                        : 'border-gray-700 text-gray-300 hover:bg-gray-800'
+                                }`}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>

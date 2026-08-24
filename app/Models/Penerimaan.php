@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Penerimaan extends Model
@@ -11,7 +12,7 @@ class Penerimaan extends Model
     protected $appends = ['status_label'];
     protected $fillable = [
         'id',
-        'namaProduk',
+        'nameProduk',
         'applicant',
         'price',
         'category',
@@ -36,6 +37,23 @@ class Penerimaan extends Model
         if($keywords) {
             $query->where('applicant', $keywords);
         }
+    }
+
+    public function scopeStatus(Builder $query, string $status)
+    {
+        if($status) {
+            $query->where('status', '=', $status);
+        }
+    }
+
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => match($this->status) {
+                'reception' => 'Masuk Gudang',
+                default => 'Tidak diketahui'
+            }
+        );
     }
 
     public function type()

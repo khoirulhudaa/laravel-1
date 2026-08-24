@@ -17,7 +17,7 @@ class ProdukElektroniksFactory extends Factory
     public function definition(): array
     {
 
-        $categories = ['Laptop0', 'Smartphone', 'Monitor', 'Printer', 'Keyboard'];
+        $categories = ['Laptop', 'Smartphone', 'Monitor', 'Printer', 'Keyboard'];
         $suppliers = ['PT Sinar Jaya', 'PT TMSC Taiwan'];
         $buyers = ['Huda', 'Nabila'];
         $types = ['LG', 'Panasonic'];

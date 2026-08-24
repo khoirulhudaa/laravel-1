@@ -40,7 +40,6 @@ Route::middleware(['auth', 'checkAdmin'])->group(function () {
     Route::delete('/produk-elektroniks/{id}', [ProdukElektroniksController::class, 'destroy'])->name('produk-elektroniks.destroy'); 
     Route::post('/produk-elektroniks/${id}/restore', [ProdukElektroniksController::class, 'restore'])->name('produk-elektroniks.restore');
 
-
     Route::post('/penerimaan/{id}/comment', [penerimaanController::class, 'comment'])->name('penerimaan.comment');
     Route::get('/penerimaan', [PenerimaanController::class, 'index'])->name('penerimaan.index');
     Route::post('/penerimaan/store', [PenerimaanController::class, 'store'])->name('penerimaan.store');
@@ -49,7 +48,8 @@ Route::middleware(['auth', 'checkAdmin'])->group(function () {
     Route::put('/penerimaan/edit/{id}', [PenerimaanController::class, 'update'])->name('penerimaan.update');
     Route::delete('/penerimaan/destroy/{id}', [PenerimaanController::class, 'destroy'])->name('penerimaan.destroy');
     Route::post('/penerimaan/{id}/restore', [PenerimaanController::class, 'restore'])->name('penerimaan.restore');
-    
+    Route::put('/penerimaan/rollbackToPending/{id}', [PenerimaanController::class, 'rollbackToPending'])->name('penerimaan.rollbackToPending');
+
     Route::post('/permintaan/{id}/comment', [PermintaanController::class, 'comment'])->name('permintaan.comment');
     Route::get('/permintaan', [PermintaanController::class, 'index'])->name('permintaan.index');
     Route::post('/permintaan/store', [PermintaanController::class, 'store'])->name('permintaan.store');

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('price');
             $table->string('description');
             $table->string('condition');
-            $table->string('type');
             $table->foreignId('type_id')->nullable()->constrained('type')->onDelete('set null');
             $table->timestamps();
         });

@@ -29,12 +29,12 @@ class ProdukElektroniksService
             $query->where('tipe', $request->input('type'));
         }
 
-        return $query->get();
+        return $query->paginate($request->input('per_page', 10))->withQueryString();
     }
 
     public function getProdukElektronikById($id)
     {
-        return ProdukElektroniks::find($id, ['*']);
+        return ProdukElektroniks::findOrFail($id);
     }
 
     public function createProdukElektronik(array $data)
@@ -51,6 +51,12 @@ class ProdukElektroniksService
     
     public function deleteProdukElektronik(int $id)
     {
-        ProdukElektroniks::destroy($id);
+        return ProdukElektroniks::findOrFail($id)->destroy($id);
+    }
+
+    public function restoreDataProduk(int $id)
+    {
+        $produk = ProdukElektroniks::withTrashed()->findOrFail($id);
+        return $produk->restore();
     }
 }

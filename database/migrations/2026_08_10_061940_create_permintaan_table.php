@@ -17,7 +17,10 @@ return new class extends Migration
             $table->string('applicant');
             $table->string('price');
             $table->string('category');
-            $table->string('type');
+            $table->foreignId('type_id')
+                ->nullable()
+                ->constrained('type')
+                ->onDelete('set null');
             $table->string('condition');
             $table->string('description');
             $table->string('status');

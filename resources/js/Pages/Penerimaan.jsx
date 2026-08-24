@@ -1,14 +1,18 @@
-import { ActionGroup, ApproveButton, DeleteButton, EditButton, RejectButton } from '@/Components/DataTable/ActionButtons';
+import { ActionGroup, ApproveButton, DeleteButton, EditButton, RejectButton, RollbackButton } from '@/Components/DataTable/ActionButtons';
+import Modal from '@/Components/Modal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { DataTable } from '@/shared/dataTable';
 import { Button, Dialog, DialogPanel, DialogTitle, Transition } from '@headlessui/react';
 import { router } from '@inertiajs/react';
+import { TriangleAlertIcon } from 'lucide-react';
 import { Fragment, useState } from 'react';
 
 export default function Penerimaan({penerimaanData}) {
 
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [isItemDelete, setIsItemDelete] = useState(null);
+    const [selectItem, setSelectItem] = useState(null);
 
     const columns = [
         {accessor: 'namaProduk', header: 'Nama'},
@@ -33,8 +37,22 @@ export default function Penerimaan({penerimaanData}) {
         })
     }
     
-    const handleReject = (item) => {
-        router.post(route('penerimaan.reject', item.id))
+    const handleRollbackToPending = (item) => {
+        setShowModal(true);
+        setSelectItem(item);
+    }
+    
+    const handleConfirmRollback = (item) => {        
+        router.put(route('penerimaan.rollbackToPending', item.id), {
+            onSuccess: () => {
+                setShowModal(false)
+                setSelectItem(null)
+            },
+            onError: () => {
+                setShowModal(false)
+                setSelectItem(null)
+            }
+        })
     }
 
     const handleApproval = (item) => {
@@ -56,8 +74,8 @@ export default function Penerimaan({penerimaanData}) {
                 <ApproveButton 
                     onClick={() => handleApproval(item)}
                 />
-                <RejectButton 
-                    onClick={() => handleReject(item)}
+                <RollbackButton 
+                    onClick={() => handleRollbackToPending(item)}
                 />
                 <EditButton 
                     onClick={() => handleEdit(item)}
@@ -120,6 +138,43 @@ export default function Penerimaan({penerimaanData}) {
                 </div>
             </Dialog>
         </Transition>
+
+        {
+            showModal && (
+                <Modal show={showModal} onClose={() => setShowModal(false)} maxWidth="md">
+                    <div className="p-6">
+                        <div className="flex items-center gap-4">
+                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-red-200">
+                                <TriangleAlertIcon className="h-5 w-5 text-red-600" />
+                            </div>
+                            <div className="flex-1 pt-1">
+                                <h3 className="text-base font-semibold text-gray-900">
+                                    Kembalikan ke status (pending) ?
+                                </h3>
+                                <p className="mt-1 text-sm text-gray-500">
+                                    Data <span className="font-medium text-gray-700">{selectItem?.nameProduk}</span> akan dirollback secara permanen.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 grid grid-cols-2 justify-between gap-3">
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 active:scale-[0.98]"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={() => handleConfirmRollback(selectItem)}
+                                className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 active:scale-[0.98]"
+                            >
+                                Ya, Rollback
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            )
+        }
 
         </AuthenticatedLayout>
     );

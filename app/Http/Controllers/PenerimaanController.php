@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PenerimaanRequest;
 use App\Models\Penerimaan;
 use App\Services\PenerimaanService;
+use App\Trait\RedirectsWithFlash;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PenerimaanController extends Controller
 {
+
+    use RedirectsWithFlash;
+
     /**
      * Display a listing of the resource.
      */
-    public function index(penerimaanService $penerimaanService, Request $request)
+    public function index(PenerimaanService $penerimaanService, Request $request)
     {
 
         $penerimaanData = $penerimaanService->getAllDataPenerimaan($request);
@@ -20,6 +25,12 @@ class PenerimaanController extends Controller
         return Inertia::render('Penerimaan', [
             'penerimaanData' => $penerimaanData
         ]);
+    }
+
+    public function rollbackToPending(PenerimaanService $penerimaanService, int $id)
+    {
+        $penerimaanService->rollbackToPending($id);
+        return $this->redirectSuccess('penerimaan.index', 'Status data berhasil dirollback');
     }
 
     /**
@@ -49,24 +60,30 @@ class PenerimaanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Penerimaan $penerimaan)
+    public function edit(PenerimaanService $penerimaanService, int $id)
     {
-        //
+        $data = $penerimaanService->getDataById($id);
+
+        return Inertia::render('UpdatePenerimaan', [
+            'data' => $data
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Penerimaan $penerimaan)
+    public function update(PenerimaanRequest $penerimaanRequest, PenerimaanService $penerimaanService, int $id)
     {
-        //
+        $penerimaanService->updateData($penerimaanRequest->validated(), $id);
+        return $this->redirectSuccess('penerimaan.index', 'Data berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Penerimaan $penerimaan)
+    public function destroy(PenerimaanService $penerimaanService, int $id)
     {
-        //
+        $penerimaanService->destroy($id);
+        return $this->redirectSuccess('penerimaan.index', 'Data berhasil dihapus');
     }
 }

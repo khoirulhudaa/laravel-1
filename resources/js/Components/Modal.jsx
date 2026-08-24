@@ -12,6 +12,7 @@ export default function Modal({
     closeable = true,
     onClose = () => {},
 }) {
+    
     const close = () => {
         if (closeable) {
             onClose();
