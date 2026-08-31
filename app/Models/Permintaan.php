@@ -21,6 +21,7 @@ class Permintaan extends Model
     protected $fillable = [
         'id',
         'namaProduk',
+        'kodeseri',
         'applicant',
         'price',
         'category',

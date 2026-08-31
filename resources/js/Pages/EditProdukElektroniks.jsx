@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { Form, router, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Save, ArrowLeft } from 'lucide-react';
 
@@ -29,7 +29,7 @@ export default function EditProdukElektroniks({ produk }) {
         condition: produk.condition ?? '',
         description: produk.description ?? '',
         price: produk.price ?? '',
-    });
+    }); 
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -61,7 +61,10 @@ export default function EditProdukElektroniks({ produk }) {
                             Edit: {produk.nameProduk}
                         </h3>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <Form
+                        action={router.put(route('produk-elektroniks.update'), data)}
+                        method='put'
+                        className="space-y-5">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
                                     <label className={labelClass}>Nama Produk</label>
@@ -205,7 +208,7 @@ export default function EditProdukElektroniks({ produk }) {
                                     {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                 </button>
                             </div>
-                        </form>
+                        </Form>
                     </div>
                 </div>
             </div>

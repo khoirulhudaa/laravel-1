@@ -20,6 +20,8 @@ class TypeModel extends Model
         'initial'
     ];
 
+
+
     protected function search(Builder $query, string $keywords)
     {
         if($keywords) {

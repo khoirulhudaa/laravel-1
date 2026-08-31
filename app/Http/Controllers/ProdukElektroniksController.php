@@ -44,10 +44,10 @@ class ProdukElektroniksController extends Controller
         return $this->redirectSuccess('produk-elektroniks.index', 'Data berhasil ditambahkan');
     }
         
-        public function edit()
+    public function edit(ProdukElektroniksService $produkElektroniksService, int $id)
     {
         
-        $produk = ProdukElektroniks::findOrFail(request()->route('id'));   
+        $produk = $produkElektroniksService->getProdukElektronikById($id); 
         
         if (!$produk) {
             return $this->redirectError('produk-elektroniks.index', 'Data tidak ditemukan!');

@@ -5,6 +5,7 @@ import { DataTable } from '@/shared/dataTable';
 import { Dialog, DialogPanel, DialogTitle, Transition } from '@headlessui/react';
 import { router } from '@inertiajs/react';
 import { Fragment, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function Dashboard({produkElektroniks}) {
 
@@ -25,7 +26,7 @@ export default function Dashboard({produkElektroniks}) {
     ]
 
     const handleEdit = (item) => {
-        setShowModal(true)
+        router.get(route('produk-elektroniks.edit', item.id))
     }
     
     const handleDelete = (item) => {
@@ -43,14 +44,22 @@ export default function Dashboard({produkElektroniks}) {
     }
 
     const confirmDelete = () => {
-        router.delete('produk-elektroniks.dstroy', isItemDelete?s.id)
+        router.delete(route('produk-elektroniks.destroy', isItemDelete?.id), {
+            onSuccess: () => {
+                setIsItemDelete(false)
+                setShowModalDelete(false)
+            },
+            onError: () => {
+                toast.error('Gagal menghapus data')
+            }
+        })
     }
 
     const actions = (item) => {
         return (
             <ActionGroup>
                 <EditButton 
-                    onClick={() => handleEdit(item.id)}
+                    onClick={() => handleEdit(item)}
                 />
                 <DetailButton 
                     onClick={() => handleDetail(item)}
@@ -102,7 +111,7 @@ export default function Dashboard({produkElektroniks}) {
                             Batalkan
                             </Button>
                             <Button
-                                className="w-full inline-flex justify-center active:scale-[0.98] items-center gap-2 rounded-md bg-red-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
+                                className="w-full inline-flex justify-center hover:bg-red-700 active:scale-[0.98] items-center gap-2 rounded-md bg-red-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
                                 onClick={() => confirmDelete()}
                             >
                             Hapus

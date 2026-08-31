@@ -3,7 +3,9 @@ export default function PrimaryButton({
     disabled,
     children,
     ...props
-}) {
+}) 
+
+{
     return (
         <button
             {...props}
