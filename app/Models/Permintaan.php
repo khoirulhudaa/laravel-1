@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -49,7 +48,7 @@ class Permintaan extends Model
         );
     }
 
-    #[Scope]
+
     protected function scopeSearch(Builder $query, ?string $keyword): void
     {
      if($keyword) {
@@ -63,7 +62,6 @@ class Permintaan extends Model
      }   
     }
 
-    #[Scope]
     protected function scopeCategory(Builder $query, ?string $category): void
     {
         if($category) {
@@ -71,7 +69,6 @@ class Permintaan extends Model
         }
     }
 
-    #[Scope]
     protected function scopeStatus(Builder $query, ?array $status)
     {
         if($status) {

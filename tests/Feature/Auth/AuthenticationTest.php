@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,6 +15,17 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get('/login');
 
+        $response->assertStatus(200);
+    }
+
+    public function test_permintaan_screen():void
+    {
+        $role = Role::factory()->create(['name' => 'Admin']);
+        $user = User::factory()->create([
+            'role_id' => $role->id
+        ]);
+        $response = $this->actingAs($user)->get('/permintaan');
+        
         $response->assertStatus(200);
     }
 
