@@ -37,4 +37,13 @@ class PenerimaanService
     {   
         return Penerimaan::findOrFail($id)->delete();
     }
+
+    public function getAllDataPenerimaanByStatus(Request $request, string $status)
+    {
+        return Penerimaan::search($request->input('search'))
+            ->applicant($request->input('applicant'))
+            ->status($status)
+            ->with('type')
+            ->paginate($request->input('per_page', 10));
+    }
 }

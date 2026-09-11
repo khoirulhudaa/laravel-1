@@ -28,7 +28,7 @@ class PermintaanRequest extends FormRequest
             'category' => ['required', 'string', 'in:Laptop,Smartphone,Tablet,Tv,Kamera,Audio,Sound,Hardware,Software,Komputer'],
             'type' => ['required', 'string', 'in:Lg,Panasonic,Samsung,Motorola,Vivo,Oppo,Intel,Hp', 'min:3', 'max:255'],
             'description' => ['required', 'min:3', 'max:255'],
-            'status' => ['required', 'string', 'in:pending,approved,rejected,another'],
+            'status' => ['required', 'string', 'in:PROSES PERSETUJUAN,PROSES PEMBELIAN,DITERIMA,REJECTED,ANOTHER'],
             'price' => ['required', 'string'],
             'condition' => ['required', 'string', 'in:New,Second'],
         ];

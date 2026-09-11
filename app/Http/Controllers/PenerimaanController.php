@@ -86,4 +86,13 @@ class PenerimaanController extends Controller
         $penerimaanService->destroy($id);
         return $this->redirectSuccess('penerimaan.index', 'Data berhasil dihapus');
     }
+
+    public function getAllDataPenerimaanByStatus(PenerimaanService $penerimaanService, Request $request, string $status)
+    {
+        $penerimaanData = $penerimaanService->getAllDataPenerimaanByStatus($request, $status);
+
+        return Inertia::render('Penerimaan', [
+            'penerimaanData' => $penerimaanData
+        ]);
+    }
 }

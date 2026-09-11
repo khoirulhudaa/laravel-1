@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenerimaanController;
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\ProdukElektroniksController;
@@ -28,10 +29,19 @@ Route::middleware(['commentRole'])->group(function() {
 });
 
 Route::middleware(['auth', 'checkAdmin'])->group(function () {
+
+
+    // PROFILE
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+
+    // PEMBELIAN
+    Route::get('/pembelian', [PembelianController::class, 'index'])->name('pembelian.index');
+
+
+    // PRODUK EEKTRONIKS
     Route::get('/produk-elektroniks', [ProdukElektroniksController::class, 'index'])->name('produk-elektroniks.index');
     Route::post('/produk-elektroniks', [ProdukElektroniksController::class, 'store'])->name('produk-elektroniks.store');
     Route::get('/produk-elektroniks/create', [ProdukElektroniksController::class, 'create'])->name('produk-elektroniks.create');
@@ -40,6 +50,8 @@ Route::middleware(['auth', 'checkAdmin'])->group(function () {
     Route::delete('/produk-elektroniks/{id}', [ProdukElektroniksController::class, 'destroy'])->name('produk-elektroniks.destroy'); 
     Route::post('/produk-elektroniks/${id}/restore', [ProdukElektroniksController::class, 'restore'])->name('produk-elektroniks.restore');
 
+
+    // PENERIMAAN
     Route::post('/penerimaan/{id}/comment', [penerimaanController::class, 'comment'])->name('penerimaan.comment');
     Route::get('/penerimaan', [PenerimaanController::class, 'index'])->name('penerimaan.index');
     Route::post('/penerimaan/store', [PenerimaanController::class, 'store'])->name('penerimaan.store');
@@ -49,7 +61,10 @@ Route::middleware(['auth', 'checkAdmin'])->group(function () {
     Route::delete('/penerimaan/destroy/{id}', [PenerimaanController::class, 'destroy'])->name('penerimaan.destroy');
     Route::post('/penerimaan/{id}/restore', [PenerimaanController::class, 'restore'])->name('penerimaan.restore');
     Route::put('/penerimaan/rollbackToPending/{id}', [PenerimaanController::class, 'rollbackToPending'])->name('penerimaan.rollbackToPending');
+    Route::get('/penerimaan/status/{status}', [PenerimaanController::class, 'getAllDataPenerimaanByStatus'])->name('penerimaan.status');
 
+
+    // PERMINTAAN
     Route::post('/permintaan/{id}/comment', [PermintaanController::class, 'comment'])->name('permintaan.comment');
     Route::get('/permintaan', [PermintaanController::class, 'index'])->name('permintaan.index');
     Route::post('/permintaan/store', [PermintaanController::class, 'store'])->name('permintaan.store');
@@ -59,10 +74,13 @@ Route::middleware(['auth', 'checkAdmin'])->group(function () {
     Route::delete('/permintaan/destroy/{id}', [PermintaanController::class, 'destroy'])->name('permintaan.destroy');
     Route::post('/permintaan/{id}/restore', [PermintaanController::class, 'restore'])->name('permintaan.restore');
 
+
     // ACC/REJECT
     Route::post('/permintaan/approval/{id}', [PermintaanController::class, 'approval'])->name('permintaan.approval');
     Route::post('/permintaan/reject/{id}', [PermintaanController::class, 'reject'])->name('permintaan.reject');
     
+
+    // TYPE
     Route::get('/type', [TypeController::class, 'index'])->name('type.index');
     Route::post('/type/store', [TypeController::class, 'store'])->name('type.store');
     Route::get('/type/create', [TypeController::class, 'create'])->name('type.create');

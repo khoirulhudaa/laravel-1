@@ -67,6 +67,9 @@ export default function Header() {
             <a href="/penerimaan" className="text-sm/6 font-semibold text-black">
               Penerimaan
             </a>
+            <a href="/pembelian" className="text-sm/6 font-semibold text-black">
+              Pembelian
+            </a>
           </PopoverGroup>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">

@@ -66,7 +66,7 @@ class PermintaanService
     {
         $dataById = Permintaan::findOrFail($id);
         $dataById->update([
-            'status' => 'approved'
+            'status' => 'PROSES PEMBELIAN'
         ]);
         return Penerimaan::create([
             'nameProduk' => $dataById->namaProduk,
