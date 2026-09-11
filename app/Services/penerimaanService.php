@@ -11,14 +11,14 @@ class PenerimaanService
     {
         return Penerimaan::search($request->input('search'))
             ->applicant($request->input('applicant'))
-            ->status('reception')
+            ->status('DITERIMA')
             ->with('type')
             ->paginate($request->input('per_page', 10));
     }
 
     public function rollbackToPending(int $id)
     {
-        return Penerimaan::findOrFail($id)->update(['status' => 'pending']);
+        return Penerimaan::findOrFail($id)->update(['status' => 'PROSES PERSETUJUAN']);
     }
 
     public function getDataById(int $id)

@@ -13,7 +13,7 @@ class PembelianService
         return PembelianModel::search($request->input('search'))
         ->status('PROSES PEMBELIAN')
         ->with('type')
-        ->paginate($request->input('per_Page', 10));
+        ->paginate($request->input('per_page', 10));
     }
 
     public function getDataPembelianById(int $id)
